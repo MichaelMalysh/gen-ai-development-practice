@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * A DTO class for the response format.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

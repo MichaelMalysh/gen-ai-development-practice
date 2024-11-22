@@ -22,6 +22,8 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class SimplePromptsService implements ISimplePromptsService {
 
+    public static final String REFORMATING_REGEX = "^\\d+\\. .*";
+    public static final String CLEAR_OUTPUT_REGEX = "^\"|\"$";
     @Autowired
     private final OpenAIAsyncClient aiAsyncClient;
     @Autowired
@@ -54,11 +56,12 @@ public class SimplePromptsService implements ISimplePromptsService {
 
         kernel.invokePromptAsync(prompt)
                 .withPromptExecutionSettings(invocationContext.getPromptExecutionSettings())
+                .withInvocationContext(invocationContext)
                 .subscribe(result -> {
                     String output = Objects.requireNonNull(result.getResult()).toString();
                     log.info("Raw Result: {}", output);
 
-                    List<String> books = parseBooks(output);
+                    List<String> books = parseBooksByNames(output);
 
                     ResponseFormat responseFormat = ResponseFormat.builder()
                             .input(prompt)
@@ -71,14 +74,18 @@ public class SimplePromptsService implements ISimplePromptsService {
         return futureResponse.join();
     }
 
-    private List<String> parseBooks(String output) {
+    private List<String> parseBooksByNames(String output) {
         List<String> bookLines = new ArrayList<>();
         String[] lines = output.split("\n");
 
         for (String line : lines) {
             line = line.trim();
-            if (line.matches("^\\d+\\. .*")) {
-                String bookTitle = line.substring(line.indexOf(' ') + 1).replaceAll("^\"|\"$", "").trim();
+            if (line.matches(REFORMATING_REGEX)) {
+                String bookTitle = line
+                        .substring(line.indexOf(' ') + 1)
+                        .replaceAll(CLEAR_OUTPUT_REGEX, "")
+                        .trim();
+
                 bookLines.add(bookTitle);
             }
         }
