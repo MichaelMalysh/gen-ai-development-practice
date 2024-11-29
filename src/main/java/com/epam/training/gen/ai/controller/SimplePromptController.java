@@ -1,7 +1,10 @@
 package com.epam.training.gen.ai.controller;
 
+import com.epam.training.gen.ai.dto.ChatHistoryInstance;
 import com.epam.training.gen.ai.dto.ResponseFormat;
+import com.epam.training.gen.ai.service.IChatHistoryProcessing;
 import com.epam.training.gen.ai.service.ISimplePromptsService;
+import com.microsoft.semantickernel.services.chatcompletion.ChatHistory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +27,12 @@ public class SimplePromptController {
     @Autowired
     private ISimplePromptsService simplePromptsService;
 
+    @Autowired
+    private IChatHistoryProcessing chatHistoryProcessing;
+
+    @Autowired
+    private ChatHistoryInstance chatHistoryInstance;
+
     /**
      * Generates a list of books based on the given prompt using OpenAI.
      *
@@ -45,5 +54,19 @@ public class SimplePromptController {
     @GetMapping("/top-ten-books-sa")
     public ResponseFormat topTenBooksSa(@RequestParam("prompt") String prompt) {
         return simplePromptsService.printTopTenBooksSemanticKernel(prompt);
+    }
+
+    @GetMapping("/chat-with-history")
+    public ResponseFormat chatWithHistory(@RequestParam("prompt") String prompt) {
+        var chatHistory = chatHistoryInstance.getChatHistory();
+        String response = chatHistoryProcessing.processWithHistory(chatHistory, prompt);
+        return new ResponseFormat(prompt, List.of(response));
+    }
+
+    @GetMapping("/chat-history-last-message")
+    public ResponseFormat chatHistoryLastMessage() {
+        var chatHistory = chatHistoryInstance.getChatHistory();
+        String response = chatHistoryProcessing.getLastMessage(chatHistory);
+        return new ResponseFormat("Last message", List.of(response));
     }
 }
