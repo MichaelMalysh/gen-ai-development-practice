@@ -12,6 +12,7 @@ public interface IChatHistoryProcessing {
 
     String getLastMessage(ChatHistory chatHistory);
 
-
     List<String> getNumberOfMessages(ChatHistory chatHistory, Long numberOfMessages);
+
+    List<String> openAIChatHistoryManagement(String prompt);
 }

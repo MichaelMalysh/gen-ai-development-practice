@@ -4,7 +4,6 @@ import com.epam.training.gen.ai.dto.ChatHistoryInstance;
 import com.epam.training.gen.ai.dto.ResponseFormat;
 import com.epam.training.gen.ai.service.IChatHistoryProcessing;
 import com.epam.training.gen.ai.service.ISimplePromptsService;
-import com.microsoft.semantickernel.services.chatcompletion.ChatHistory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +55,12 @@ public class SimplePromptController {
         return simplePromptsService.printTopTenBooksSemanticKernel(prompt);
     }
 
+    /**
+     * Generates a response to the given prompt using OpenAI.
+     *
+     * @param prompt the prompt to generate a response from
+     * @return a map containing the input prompt and the generated response
+     */
     @GetMapping("/chat-with-history")
     public ResponseFormat chatWithHistory(@RequestParam("prompt") String prompt) {
         var chatHistory = chatHistoryInstance.getChatHistory();
@@ -63,10 +68,25 @@ public class SimplePromptController {
         return new ResponseFormat(prompt, List.of(response));
     }
 
+    /**
+     * Retrieves the last message from the chat history.
+     *
+     * @return a map containing the last message from the chat history
+     */
     @GetMapping("/chat-history-last-message")
     public ResponseFormat chatHistoryLastMessage() {
         var chatHistory = chatHistoryInstance.getChatHistory();
         String response = chatHistoryProcessing.getLastMessage(chatHistory);
         return new ResponseFormat("Last message", List.of(response));
+    }
+
+    /**
+     * Retrieves a specified list of messages from the chat history as a response
+     */
+    @GetMapping("/chat-history-full")
+    public ResponseFormat chatHistoryFull() {
+        var chatHistory = chatHistoryInstance.getChatHistory();
+        List<String> response = chatHistoryProcessing.getFullHistory(chatHistory);
+        return new ResponseFormat("Full chat history", response);
     }
 }

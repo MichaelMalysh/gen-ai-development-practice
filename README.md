@@ -37,4 +37,14 @@ Nevertheless, which settings and types of book I ask in prompt, it still remembe
 
 It tries to generate as much books as possible, so it might start typing the name of the books and due to the context limitation is not finishing.
 
+## Module 2 Exploring Section
 
+### temperature and top_p
+When we set either temperature or top_p parameter with the same value we get same results.
+Wxploring combination of both params like temperature and top_p putting at once we can see that the creativity level is a middle of both values set. 
+
+### stop sequence
+When we set stop sequence we can see that the model is generating a sequence without a problem before the stop word appeared and it stops imidiately when it appears in the output.
+
+### chat history
+Using chat history instance as a singleton we can control the whole history in one session, so for each of user we can controll and store the whole conversation and manage it.

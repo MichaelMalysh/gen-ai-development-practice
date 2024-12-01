@@ -4,16 +4,14 @@ import com.azure.ai.openai.OpenAIAsyncClient;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
+import com.microsoft.semantickernel.orchestration.InvocationReturnMode;
 import com.microsoft.semantickernel.orchestration.PromptExecutionSettings;
-import com.microsoft.semantickernel.semanticfunctions.KernelFunction;
-import com.microsoft.semantickernel.semanticfunctions.KernelFunctionArguments;
 import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionService;
-import com.microsoft.semantickernel.services.chatcompletion.ChatHistory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Configuration class for setting up Semantic Kernel components.
@@ -57,31 +55,21 @@ public class SemanticKernelConfiguration {
 
     /**
      * Creates an {@link InvocationContext} bean with default prompt execution settings.
+     * Using temperature and top_k is not a good practice in this case it is just experiment.
+     * Alo we can controll the output of the messages by return mode configuration param as alternative of managing chat history.
      *
      * @return an instance of {@link InvocationContext}
      */
     @Bean
     public InvocationContext invocationContext() {
         return InvocationContext.builder()
+                .withReturnMode(InvocationReturnMode.LAST_MESSAGE_ONLY)
                 .withPromptExecutionSettings(PromptExecutionSettings.builder()
+                        .withTopP(1.0)
+                        .withTemperature(1.0)
+                        .withStopSequences(List.of("War", "Terror", "judge"))
                         .build())
                 .build();
     }
-
-
-    /**
-     * Creates a map of {@link PromptExecutionSettings} for different models.
-     *
-     * @param deploymentOrModelName the Azure OpenAI deployment or model name
-     * @return a map of model names to {@link PromptExecutionSettings}
-     */
-    @Bean
-    public Map<String, PromptExecutionSettings> promptExecutionsSettingsMap(@Value("${client-openai-deployment-name}")
-                                                                            String deploymentOrModelName) {
-        return Map.of(deploymentOrModelName, PromptExecutionSettings.builder()
-                .withTemperature(1.0)
-                .build());
-    }
-
 }
 
