@@ -48,3 +48,58 @@ When we set stop sequence we can see that the model is generating a sequence wit
 
 ### chat history
 Using chat history instance as a singleton we can control the whole history in one session, so for each of user we can controll and store the whole conversation and manage it.
+
+## Module 3
+
+For the configuration:
+```json
+{
+  "prompt": "I want to find top-10 books",
+  "max_tokens": 100,
+  "temperature": 1.0,
+  "model": "gpt-4",
+  "stop_words": ["book"],
+  "results_per_prompt": 3
+}
+```
+I will receive the answer:
+```text
+Certainly! Please specify the genre or type of books you're interested in so I can provide a more tailored top-10 list for you. Are you looking for fiction, non-fiction, thriller, romance, science fiction, or something else?
+```
+
+In case I would increase max words allowed to 1000 the answer would be:
+```text
+Here is a list of top 10 widely acclaimed books across various genres:
+
+1. **"To Kill a Mockingbird" by Harper Lee** - A classic American novel about innocence, strength, and morality.
+2. **"1984" by George Orwell** - A dystopian novel on totalitarian governance and surveillance.
+3. **"Pride and Prejudice" by Jane Austen** - A romantic novel that also provides a satire of its time.
+4. **"The Catcher in the Rye" by J.D. Salinger** - An exploration of teenage angst and alienation.
+5. **"The Great Gatsby" by F. Scott Fitzgerald** - A critique of the American Dream in the roaring 1920s.
+6. **"Harry Potter Series by J.K. Rowling** - A popular fantasy series following the life of a young wizard, Harry Potter.
+7. **"The Lord of the Rings" by J.R.R. Tolkien** - A high-fantasy epic adventure.
+8. **"Sapiens: A Brief History of Humankind" by Yuval Noah Harari** - An exploration of the evolution and impact of Homo sapiens.
+9. **"Beloved" by Toni Morrison** - A profound
+```
+
+For the configuration: 
+```json
+{
+  "prompt": "I want to find top-10 books",
+  "max_tokens": 1000,
+  "temperature": 0.1,
+  "model": "gpt-35-turbo",
+  "stop_words": ["book"],
+  "results_per_prompt": 3
+}
+```
+
+I will receive the answer:
+```text
+Sure! Could you please specify the genre or topic you are interested in?
+```
+
+For the configuration:
+```json
+
+```
