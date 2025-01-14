@@ -94,12 +94,32 @@ For the configuration:
 }
 ```
 
-I will receive the answer:
-```text
-Sure! Could you please specify the genre or topic you are interested in?
-```
 
-For the configuration:
-```json
+## Embedings
 
-```
+To be able to search for results in the vector DB we should create collection as a first step at save some elements here
+
+![img.png](src/main/resources/results/img1.png)
+
+Here we have an endpoint with creation of new element in the vector DB
+
+![img.png](src/main/resources/results/img2.png)
+
+After creation of the embedding we can verify if the element really exists
+
+![img.png](src/main/resources/results/img3.png)
+
+After repeating a process of creation embeddings we can see a graph using Qdrant docker image UI:
+
+![img.png](src/main/resources/results/img4.png)
+
+I have created such list of elements: apple, mango, peach, lemon, laptop, keyboard, monitor, headphones
+
+Finally, we can verify if our application works correctly and return the correct value based on the used input while we search the closest:
+![img.png](src/main/resources/results/img5.png)
+![img.png](src/main/resources/results/img6.png)
+![img.png](src/main/resources/results/img7.png)
+![img.png](src/main/resources/results/img8.png)
+![img.png](src/main/resources/results/img9.png)
+![img.png](src/main/resources/results/img10.png)
+![img.png](src/main/resources/results/img11.png)
