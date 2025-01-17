@@ -16,5 +16,5 @@ public interface IEmbeddingService {
 
     List<String> searchClosest(String text) throws ExecutionException, InterruptedException;
 
-
+    String createDocument(String fileContent);
 }

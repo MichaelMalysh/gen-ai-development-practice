@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
@@ -72,6 +73,21 @@ public class EmbeddingService implements IEmbeddingService {
         return qdrantService.searchVector(qdrantEmbeddingCollectionName, embeddings);
     }
 
+    @Override
+    public String createDocument(String fileContent) {
+        Mono<Embeddings> embeddingsMono = retrieveEmbeddings(fileContent);
+        Disposable disposable = embeddingsMono.subscribe(embeddings -> {
+            List<List<Float>> embeddingsBlock = embeddings.getData().stream()
+                    .map(EmbeddingItem::getEmbedding)
+                    .toList();
+            try {
+                qdrantService.saveVector(qdrantEmbeddingCollectionName, fileContent, embeddingsBlock);
+            }catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return "File processing " + String.valueOf(disposable.isDisposed() ? "completed" : "yet to be completed");
+    }
 
     /**
      * Retrieves embeddings block.

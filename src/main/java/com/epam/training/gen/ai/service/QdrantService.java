@@ -76,8 +76,10 @@ public class QdrantService implements IQdrantService {
                 .searchAsync(buildSearchPoints(collectionName, embeddings))
                 .get();
 
-        return scoredPoints.stream().filter(point -> point.containsPayload("input"))
-                .map(point -> point.getPayloadMap().get("input").getStringValue()).toList();
+        return scoredPoints.stream()
+                .filter(point -> point.containsPayload("input"))
+                .map(point -> point.getPayloadMap().get("input").getStringValue())
+                .toList();
     }
 
     /**
@@ -104,10 +106,9 @@ public class QdrantService implements IQdrantService {
      * @return list of point structs
      */
     private List<Points.PointStruct> createPointStructsBasedOnUserInput(String input, List<List<Float>> embeddings) {
-        List<Points.PointStruct> pointStructs = embeddings.stream()
+        return embeddings.stream()
                 .map(point -> buildPointStruct(point, input))
                 .collect(Collectors.toList());
-        return pointStructs;
     }
 
     /**
@@ -118,22 +119,20 @@ public class QdrantService implements IQdrantService {
      * @throws ExecutionException exception
      */
     private void createAndLogCollection(String collectionName) throws InterruptedException, ExecutionException {
-        Collections.VectorParams vectorParams = buildVectorParams(DEFAULT_COLLECTION_SIZE, DEFAULT_COLLECTION_DISTANCE);
+        Collections.VectorParams vectorParams = buildVectorParams();
         qdrantClient.createCollectionAsync(collectionName, vectorParams).get();
-        logCollectionCreationInfo(collectionName, DEFAULT_COLLECTION_SIZE, DEFAULT_COLLECTION_DISTANCE);
+        logCollectionCreationInfo(collectionName);
     }
 
     /**
      * Builds vector params.
      *
-     * @param size     size
-     * @param distance distance
      * @return vector params
      */
-    private Collections.VectorParams buildVectorParams(int size, Collections.Distance distance) {
+    private Collections.VectorParams buildVectorParams() {
         return Collections.VectorParams.newBuilder()
-                .setDistance(distance)
-                .setSize(size)
+                .setDistance(QdrantService.DEFAULT_COLLECTION_DISTANCE)
+                .setSize(QdrantService.DEFAULT_COLLECTION_SIZE)
                 .build();
     }
 
@@ -141,11 +140,12 @@ public class QdrantService implements IQdrantService {
      * Logs collection creation info.
      *
      * @param collectionName collection name
-     * @param size           size
-     * @param distance       distance
      */
-    private void logCollectionCreationInfo(String collectionName, int size, Collections.Distance distance) {
-        log.info("Collection created with name: {}, size: {} and distance: {}", collectionName, size, distance);
+    private void logCollectionCreationInfo(String collectionName) {
+        log.info("Collection created with name: {}, size: {} and distance: {}",
+                collectionName,
+                QdrantService.DEFAULT_COLLECTION_SIZE,
+                QdrantService.DEFAULT_COLLECTION_DISTANCE);
     }
 
     /**
